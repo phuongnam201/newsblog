@@ -1,5 +1,4 @@
 import React from "react";
-import { images } from "../constants";
 import { useState } from "react";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { MdKeyboardArrowDown } from "react-icons/md";
@@ -69,7 +68,7 @@ const NavItem = ({ item }) => {
                 {item.items.map((page) => (
                   <a
                     href="/"
-                    className="hover:bg-dark-soft hover:text-white px-4 py-2 text-white lg:text-dark-soft "
+                    className="hover:bg-primary hover:text-white px-4 py-2 text-white lg:text-dark-soft "
                   >
                     {page}
                   </a>
@@ -95,9 +94,13 @@ const Header = () => {
   return (
     <div>
       <section className=" sticky top-0 left-0 right-0 z-50 bg-white">
-        <header className="container mx-auto px-5 flex justify-between py-4 items-center">
-          <div>
-            <img className="w-16 " src={images.Logo} alt="logo" />
+        <header className="container mx-auto px-5 flex justify-between py-4 items-center ">
+          <div className="cursor-pointer">
+            {/* <img className="w-16 " src={images.Logo} alt="logo" /> */}
+            <span className="font-roboto text-4xl font-bold text-dark-soft">
+              Thenews
+            </span>
+            <h4 className="font-opensans italic">Discover the Latest</h4>
           </div>
           <div className="lg:hidden z-50">
             {navIsVisible ? (
