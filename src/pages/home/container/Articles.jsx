@@ -4,7 +4,7 @@ import ArticleCard from "../../../components/ArticleCard";
 
 const Articles = () => {
   return (
-    <section className="flex flex-col container nx-auto px-5 py-10">
+    <section className="w-10/12 m-auto flex flex-col container nx-auto px-5 py-10">
       <div className="flex flex-wrap md:gap-x-5 gap-y-5 pb-10">
         <ArticleCard className="w-full md:w-[calc(50%-20px)] lg:w-[calc(33.3333%-20px)]" />
         <ArticleCard className="w-full md:w-[calc(50%-20px)] lg:w-[calc(33.3333%-20px)]" />

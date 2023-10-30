@@ -4,6 +4,7 @@ import BreadCrumbs from "../../components/BreadCrumbs";
 import { images } from "../../constants";
 import { Link } from "react-router-dom";
 import SuggestedPosts from "./container/SuggestedPosts";
+import CommentsContainer from "../../components/comments/CommentsContainer";
 
 const breadCrumbsData = [
   { name: "Home", link: "/" },
@@ -16,25 +17,25 @@ const postsData = [
     _id: "1",
     image: images.PostImage,
     title: "Help children get better education",
-    createAt: "2023-01-28T15:35:53.607+0000",
+    createdAt: "2023-01-28T15:35:53.607+0000",
   },
   {
     _id: "2",
     image: images.PostImage,
     title: "Help children get better education",
-    createAt: "2023-01-28T15:35:53.607+0000",
+    createdAt: "2023-01-28T15:35:53.607+0000",
   },
   {
     _id: "3",
     image: images.PostImage,
     title: "Help children get better education",
-    createAt: "2023-01-28T15:35:53.607+0000",
+    createdAt: "2023-01-28T15:35:53.607+0000",
   },
   {
     _id: "4",
     image: images.PostImage,
     title: "Help children get better education",
-    createAt: "2023-01-28T15:35:53.607+0000",
+    createdAt: "2023-01-28T15:35:53.607+0000",
   },
 ];
 
@@ -79,6 +80,7 @@ const ArticleDetailPage = () => {
               lectus proin.
             </p>
           </div>
+          <CommentsContainer className="mt-10" logginedUserId="a" />
         </article>
         <SuggestedPosts
           header="Lastest articles"

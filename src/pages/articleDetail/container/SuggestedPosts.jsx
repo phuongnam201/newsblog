@@ -25,7 +25,7 @@ const SuggestedPosts = ({ className, header, posts = [], tags }) => {
                 {item.title}
               </h3>
               <span>
-                {new Date(item.createAt).toLocaleDateString("en-US", {
+                {new Date(item.createdAt).toLocaleDateString("en-US", {
                   day: "numeric",
                   month: "short",
                   year: "numeric",
