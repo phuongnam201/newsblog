@@ -90,7 +90,7 @@ const ArticleDetailPage = () => {
             tags={tagsData}
             className="mt-8 lg:mt-0 lg:max-w-xs"
           />
-          <div className="mt-7">
+          <div className="mt-7 rounded-lg shadow-[rgba(7,_65,_210,_0.1)_0px_9px_30px] p-4">
             <h2 className="font-roboto font-medium text-dark-hard mb-4 md:text-xl">
               Share on:
             </h2>
