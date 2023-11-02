@@ -1,5 +1,5 @@
 import User from "../models/User";
-import { uploadPicture } from "../middleware/uploadPicturMiddleware";
+import { uploadPicture } from "../middleware/uploadPictureMiddleware";
 import { fileRemover } from "../utils/fileRemover";
 
 export const registerUser = async (req, res, next) => {
