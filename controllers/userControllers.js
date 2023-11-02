@@ -1,6 +1,6 @@
-import { json } from "express";
 import User from "../models/User";
 import { uploadPicture } from "../middleware/uploadPicturMiddleware";
+import { fileRemover } from "../utils/fileRemover";
 
 export const registerUser = async (req, res, next) => {
   try {
@@ -116,10 +116,50 @@ const updateProfilePicture = (req, res, next) => {
     const upload = uploadPicture.single("profilePicture");
     upload(req, res, async function (err) {
       if (err) {
-        const error = new Error("An unknow error occured when uploading");
+        const error = new Error(
+          "An unknown error occured when uploading " + err.message
+        );
+      } else {
+        if (req.file) {
+          let filename;
+          const updateUser = await User.findById(req.user._id);
+          filename = updateUser.avatar;
+          if (filename) {
+            fileRemover(filename);
+          }
+          updateUser.avatar = req.file.filename;
+          await updateUser.save();
+          res.json({
+            _id: updateUser._id,
+            avatar: updateUser.avatar,
+            name: updateUser.name,
+            email: updateUser.email,
+            verified: updateUser.verified,
+            admin: updateUser.admin,
+            token: await updateUser.generateJWT(),
+          });
+        } else {
+          let filename;
+          let updateUser = await User.findById(req.user._id);
+          filename = updateUser.avatar;
+          updateUser.avatar = "";
+          await updateUser.save();
+          fileRemover(filename);
+          res.json({
+            _id: updateUser._id,
+            avatar: updateUser.avatar,
+            name: updateUser.name,
+            email: updateUser.email,
+            verified: updateUser.verified,
+            admin: updateUser.admin,
+            token: await updateUser.generateJWT(),
+          });
+        }
       }
     });
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 };
 
 export {
