@@ -1,9 +1,25 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import MainLayout from "../../components/MainLayout";
+import { useMutation } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import { signup } from "../../services/index/users";
+import toast from "react-hot-toast";
 
 const RegisterPage = () => {
+  const { mutate, isLoading } = useMutation({
+    mutationFn: ({ name, email, password }) => {
+      return signup({ name, email, password });
+    },
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+      console.log(error);
+    },
+  });
+
   const {
     register,
     handleSubmit,
@@ -21,6 +37,8 @@ const RegisterPage = () => {
 
   const sumbitHandler = (data) => {
     console.log(data);
+    const { name, email, password } = data;
+    mutate({ name, email, password });
   };
 
   const password = watch("password");
@@ -164,7 +182,7 @@ const RegisterPage = () => {
             </div>
             <input
               type="submit"
-              disabled={!isValid}
+              disabled={!isValid || isLoading}
               className="text-center text-lg w-full bg-primary text-white hover:opacity-60 mx-auto px-8 py-4 mt-5 rounded-lg font-roboto disabled:placeholder-opacity-70 disabled:cursor-not-allowed"
               value="Submit"
             />
