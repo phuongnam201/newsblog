@@ -125,23 +125,28 @@ const LoginPage = () => {
               )}
             </div>
 
+            <div className="text-right font-semibold mt-2 ">
+              <Link
+                to="/forgot-password"
+                className="text-sm font-semibold text-primary hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
+
             <input
               type="submit"
               disabled={!isValid || isLoading}
               className="text-center text-lg w-full bg-primary text-white hover:opacity-60 mx-auto px-8 py-4 mt-5 rounded-lg font-roboto disabled:placeholder-opacity-70 disabled:cursor-not-allowed"
               value="Submit"
             />
-            <div className="text-right font-semibold mt-2">
-              <Link
-                to="/forgot-password"
-                className="text-sm font-semibold text-primary"
-              >
-                Forgot password?
-              </Link>
-            </div>
-            <div className="text-center mt-2 font-semibold">
+
+            <div className="text-center mt-2 font-semibold ">
               <span>Do you have an account? </span>
-              <Link to="/register" className="text-sm text-primary ">
+              <Link
+                to="/register"
+                className="text-sm font-semibold text-primary hover:underline"
+              >
                 Register
               </Link>
             </div>

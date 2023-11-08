@@ -4,30 +4,21 @@ import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../store/actions/user";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const navItemsInfo = [
-  {
-    name: "Home",
-    type: "link",
-  },
-  {
-    name: "Articles",
-    type: "link",
-  },
+  { name: "Home", type: "link", href: "/" },
+  { name: "Articles", type: "link", href: "/articles" },
   {
     name: "Pages",
     type: "dropdown",
-    items: ["About us", "Contact"],
+    items: [
+      { title: "About us", href: "/about" },
+      { title: "Contact us", href: "/contact" },
+    ],
   },
-  {
-    name: "Pricing",
-    type: "link",
-  },
-  {
-    name: "FAQ",
-    type: "link",
-  },
+  { name: "Pricing", type: "link", href: "/pricing" },
+  { name: "Faq", type: "link", href: "/faq" },
 ];
 
 const NavItem = ({ item }) => {
@@ -52,30 +43,28 @@ const NavItem = ({ item }) => {
             </a>
           </>
         ) : (
-          <div className="flex flex-col item-center">
+          <div className="flex flex-col items-center">
             <button
-              href="/"
-              className="px-4 py-2 flex gap-x-1 items-center "
+              className="px-4 py-2 flex gap-x-1 items-center"
               onClick={toggleDropdownHandler}
             >
-              <span>{item.name}</span>
+              <span className="font-bold">{item.name}</span>
               <MdKeyboardArrowDown />
             </button>
-
             <div
               className={`${
                 dropdown ? "block" : "hidden"
               } lg:hidden transition-all duration-500 pt-4 lg:absolute lg:bottom-0 lg:right-0 lg:transform lg:translate-y-full lg:group-hover:block w-max`}
             >
-              <ul className="bg-dark-soft lg:bg-transparent flex flex-col shadow-md shadow-neutral-500 rounded-lg overflow-hidden ">
+              <ul className="bg-dark-soft lg:bg-transparent text-center flex flex-col shadow-lg rounded-lg overflow-hidden">
                 {item.items.map((page, index) => (
-                  <a
+                  <Link
                     key={index}
-                    href="/"
-                    className="hover:bg-primary hover:text-white px-4 py-2 text-white lg:text-dark-soft "
+                    to={page.href}
+                    className="hover:bg-dark-hard hover:text-white px-4 py-2 text-white lg:text-dark-soft"
                   >
-                    {page}
-                  </a>
+                    {page.title}
+                  </Link>
                 ))}
               </ul>
             </div>
