@@ -35,12 +35,12 @@ const NavItem = ({ item }) => {
       <li className="relative group">
         {item.type === "link" ? (
           <>
-            <a
-              href="/"
+            <Link
+              to={"/"}
               className="hover:text-blue-500 transition-all duration-200 font-bold py-2 px-4 cursor-pointer"
             >
               {item.name}
-            </a>
+            </Link>
           </>
         ) : (
           <div className="flex flex-col items-center">

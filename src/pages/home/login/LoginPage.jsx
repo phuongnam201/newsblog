@@ -42,11 +42,10 @@ const LoginPage = () => {
       email: "",
       password: "",
     },
-    mode: "onchange",
+    mode: "onChange",
   });
 
-  const sumbitHandler = (data) => {
-    //console.log(data);
+  const submitHandler = (data) => {
     const { email, password } = data;
     mutate({ email, password });
   };
@@ -58,7 +57,7 @@ const LoginPage = () => {
           <h1 className="font-roboto text-2xl font-bold text-center text-dark-hard">
             Login
           </h1>
-          <form action="" onSubmit={handleSubmit(sumbitHandler)}>
+          <form action="" onSubmit={handleSubmit(submitHandler)}>
             {/* email */}
             <div className="flex flex-col mb-6 w-full">
               <label

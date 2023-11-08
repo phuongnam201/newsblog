@@ -45,11 +45,10 @@ const RegisterPage = () => {
       password: "",
       confirmPassword: "",
     },
-    mode: "onchange",
+    mode: "onChange",
   });
 
-  const sumbitHandler = (data) => {
-    console.log(data);
+  const submitHandler = (data) => {
     const { name, email, password } = data;
     mutate({ name, email, password });
   };
@@ -63,7 +62,7 @@ const RegisterPage = () => {
           <h1 className="font-roboto text-2xl font-bold text-center text-dark-hard">
             Sign Up
           </h1>
-          <form action="" onSubmit={handleSubmit(sumbitHandler)}>
+          <form action="" onSubmit={handleSubmit(submitHandler)}>
             <div className="flex flex-col mb-6 w-full">
               <label
                 htmlFor="name"
