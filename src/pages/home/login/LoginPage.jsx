@@ -20,6 +20,7 @@ const LoginPage = () => {
     onSuccess: (data) => {
       dispatch(userActions.setUserInfo(data));
       localStorage.setItem("account", JSON.stringify(data));
+      toast.success("Login Success");
     },
     onError: (error) => {
       toast.error(error.message);
@@ -112,7 +113,7 @@ const LoginPage = () => {
                     message: "Password is required",
                   },
                 })}
-                placeholder="Enter your name"
+                placeholder="Enter your password"
                 className={`placeholder:text-[#959ead] text-dark-hard mt-3 rounded-lg px-5 py-4 font-semibold block outline-none border ${
                   errors.password ? "border-red-500" : "border-[#c3cad9]"
                 }`}
@@ -137,10 +138,10 @@ const LoginPage = () => {
               type="submit"
               disabled={!isValid || isLoading}
               className="text-center text-lg w-full bg-primary text-white hover:opacity-60 mx-auto px-8 py-4 mt-5 rounded-lg font-roboto disabled:placeholder-opacity-70 disabled:cursor-not-allowed"
-              value="Submit"
+              value="Sign In"
             />
 
-            <div className="text-center mt-2 font-semibold ">
+            <div className="text-center mt-5 font-semibold ">
               <span>Do you have an account? </span>
               <Link
                 to="/register"

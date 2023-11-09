@@ -61,7 +61,7 @@ const NavItem = ({ item }) => {
                   <Link
                     key={index}
                     to={page.href}
-                    className="hover:bg-dark-hard hover:text-white px-4 py-2 text-white lg:text-dark-soft"
+                    className="hover:bg-primary hover:text-white px-4 py-2 text-white lg:text-dark-soft"
                   >
                     {page.title}
                   </Link>
@@ -129,7 +129,7 @@ const Header = () => {
                       className="flex gap-x-1 items-center mt-5 lg:mt-0 border-2 border-blue-500 px-10 py-2.5 rounded-full text-blue-500 font-semibold hover:bg-blue-500 hover:text-white duration-300"
                       onClick={() => setProfileDropdown(!profileDropdown)}
                     >
-                      <span>Profie</span>
+                      <span>Account</span>
                       <MdKeyboardArrowDown />
                     </button>
 
@@ -141,9 +141,10 @@ const Header = () => {
                       <ul className="bg-dark-soft lg:bg-transparent flex flex-col shadow-md shadow-neutral-500 rounded-lg overflow-hidden ">
                         <button
                           type="button"
+                          onClick={() => navigate("/profile")}
                           className="hover:bg-primary hover:text-white px-4 py-2 text-white lg:text-dark-soft "
                         >
-                          Dashboard
+                          Profile
                         </button>
 
                         <button

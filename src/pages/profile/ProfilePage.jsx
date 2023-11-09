@@ -1,25 +1,40 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 import MainLayout from "../../components/MainLayout";
 import { useDispatch, useSelector } from "react-redux";
-import { signup } from "../../services/index/users";
+import { getUserProfile, updateProfile } from "../../services/index/users";
+import ProfilePicture from "../../components/ProfilePicture";
 import { userActions } from "../../store/reducers/userReducers";
+import toast from "react-hot-toast";
 
-const RegisterPage = () => {
+const ProfilePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   const userState = useSelector((state) => state.user);
 
-  const { mutate, isLoading } = useMutation({
+  const { data: profileData, isLoading: profileIsLoading } = useQuery({
+    queryFn: () => {
+      return getUserProfile({ token: userState.userInfo.token });
+    },
+    queryKey: ["profile"],
+  });
+
+  const { mutate, isLoading: updateProfileIsLoading } = useMutation({
     mutationFn: ({ name, email, password }) => {
-      return signup({ name, email, password });
+      return updateProfile({
+        token: userState.userInfo.token,
+        userData: { name, email, password },
+      });
     },
     onSuccess: (data) => {
       dispatch(userActions.setUserInfo(data));
       localStorage.setItem("account", JSON.stringify(data));
+      queryClient.invalidateQueries(["profile"]);
+      toast.success("Profile is updated");
     },
     onError: (error) => {
       toast.error(error.message);
@@ -28,7 +43,7 @@ const RegisterPage = () => {
   });
 
   useEffect(() => {
-    if (userState.userInfo) {
+    if (!userState.userInfo) {
       navigate("/");
     }
   }, [navigate, userState.userInfo]);
@@ -37,14 +52,18 @@ const RegisterPage = () => {
     register,
     handleSubmit,
     formState: { errors, isValid },
-    watch,
   } = useForm({
     defaultValues: {
       name: "",
       email: "",
       password: "",
-      confirmPassword: "",
     },
+    values: useMemo(() => {
+      return {
+        name: profileIsLoading ? "" : profileData.name,
+        email: profileIsLoading ? "" : profileData.email,
+      };
+    }, [profileData?.email, profileData?.name, profileIsLoading]),
     mode: "onChange",
   });
 
@@ -53,15 +72,12 @@ const RegisterPage = () => {
     mutate({ name, email, password });
   };
 
-  const password = watch("password");
-
   return (
     <MainLayout>
       <section className="container mx-auto px-5 py-10">
         <div className="w-full max-w-sm mx-auto">
-          <h1 className="font-roboto text-2xl font-bold text-center text-dark-hard">
-            Sign Up
-          </h1>
+          <p> {profileData?.avatar} </p>
+          <ProfilePicture avatar={profileData?.avatar} />
           <form action="" onSubmit={handleSubmit(submitHandler)}>
             <div className="flex flex-col mb-6 w-full">
               <label
@@ -133,22 +149,12 @@ const RegisterPage = () => {
                 htmlFor="password"
                 className="text-[#5a7184] font-semibold block"
               >
-                Password
+                New Password (optional)
               </label>
               <input
                 type="password"
                 id="password"
-                {...register("password", {
-                  minLength: {
-                    value: 6,
-                    message: "Password length must be at least 6 character",
-                  },
-                  required: {
-                    value: true,
-                    message: "Password is required",
-                  },
-                })}
-                placeholder="Enter your password"
+                placeholder="Enter your new password"
                 className={`placeholder:text-[#959ead] text-dark-hard mt-3 rounded-lg px-5 py-4 font-semibold block outline-none border ${
                   errors.password ? "border-red-500" : "border-[#c3cad9]"
                 }`}
@@ -160,51 +166,12 @@ const RegisterPage = () => {
               )}
             </div>
 
-            <div className="flex flex-col mb-6 w-full">
-              <label
-                htmlFor="confirmPassword"
-                className="text-[#5a7184] font-semibold block"
-              >
-                Confirm password
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                {...register("confirmPassword", {
-                  required: {
-                    value: true,
-                    message: "confirmPassword is required",
-                  },
-                  validate: (value) => {
-                    if (value !== password) {
-                      return "Password does not match";
-                    }
-                  },
-                })}
-                placeholder="Enter your name"
-                className={`placeholder:text-[#959ead] text-dark-hard mt-3 rounded-lg px-5 py-4 font-semibold block outline-none border ${
-                  errors.confirmPassword ? "border-red-500" : "border-[#c3cad9]"
-                }`}
-              />
-              {errors.confirmPassword?.message && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.confirmPassword?.message}
-                </p>
-              )}
-            </div>
             <input
               type="submit"
-              disabled={!isValid || isLoading}
+              disabled={!isValid || profileIsLoading}
               className="text-center text-lg w-full bg-primary text-white hover:opacity-60 mx-auto px-8 py-4 mt-5 rounded-lg font-roboto disabled:placeholder-opacity-70 disabled:cursor-not-allowed"
-              value="Submit"
+              value="Save"
             />
-
-            <div className="text-center mt-2 font-semibold">
-              <span>You have already an account? </span>
-              <Link to="/login" className="text-sm text-primary ">
-                Login now
-              </Link>
-            </div>
           </form>
         </div>
       </section>
@@ -212,4 +179,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default ProfilePage;
