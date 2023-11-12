@@ -74,9 +74,8 @@ const ProfilePage = () => {
 
   return (
     <MainLayout>
-      <section className="container mx-auto px-5 py-10">
+      <section className="relative container mx-auto px-5 py-10">
         <div className="w-full max-w-sm mx-auto">
-          <p> {profileData?.avatar} </p>
           <ProfilePicture avatar={profileData?.avatar} />
           <form action="" onSubmit={handleSubmit(submitHandler)}>
             <div className="flex flex-col mb-6 w-full">
@@ -168,7 +167,7 @@ const ProfilePage = () => {
 
             <input
               type="submit"
-              disabled={!isValid || profileIsLoading}
+              disabled={!isValid || profileIsLoading || updateProfileIsLoading}
               className="text-center text-lg w-full bg-primary text-white hover:opacity-60 mx-auto px-8 py-4 mt-5 rounded-lg font-roboto disabled:placeholder-opacity-70 disabled:cursor-not-allowed"
               value="Save"
             />
