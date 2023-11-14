@@ -8,18 +8,24 @@ import {
   invalidPathHandler,
 } from "./middleware/errorHandler";
 
-//routes
+// Routes
 import userRoutes from "./routes/userRoutes";
+import postRoutes from "./routes/postRoutes";
+import commentRoutes from "./routes/commentRoutes";
 
 dotenv.config();
-
 connectDB();
-
 const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.get("/", (req, res) => {
+  res.send("Server is running...");
+});
+
 app.use("/api/users", userRoutes);
+app.use("/api/posts", postRoutes);
+app.use("/api/comments", commentRoutes);
 
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
