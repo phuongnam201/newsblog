@@ -27,12 +27,12 @@ app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
 
+// static assets
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
 app.use(invalidPathHandler);
 app.use(errorResponserHandler);
 
-const port = process.env.PORT || 5000;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
