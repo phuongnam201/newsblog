@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { images, stables } from "../../../constants";
 
 const SuggestedPosts = ({ className, header, posts = [], tags }) => {
   return (
@@ -17,14 +18,18 @@ const SuggestedPosts = ({ className, header, posts = [], tags }) => {
           >
             <img
               className="aspect-square object-cover rounded-lg w-1/5"
-              src={item.image}
-              alt="laptop"
+              src={
+                item?.photo
+                  ? stables.UPLOAD_FOLDER_BASE_URL + item?.photo
+                  : images.samplePostImage
+              }
+              alt={item.title}
             />
             <div className="text-sm font-roboto text-dark-hard font-medium">
-              <h3 className="text-sm font-roboto text-dark-hard font-medium md:text-base">
-                {item.title}
+              <h3 className="text-sm font-roboto text-dark-hard font-medium md:text-base lg:text-lg">
+                <Link to={`/blog/${item.slug}`}>{item.title}</Link>
               </h3>
-              <span>
+              <span className="text-xs opacity-60">
                 {new Date(item.createdAt).toLocaleDateString("en-US", {
                   day: "numeric",
                   month: "short",

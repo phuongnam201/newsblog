@@ -36,7 +36,7 @@ const NavItem = ({ item }) => {
         {item.type === "link" ? (
           <>
             <Link
-              to={"/"}
+              to={item.href}
               className="hover:text-blue-500 transition-all duration-200 font-bold py-2 px-4 cursor-pointer"
             >
               {item.name}
@@ -138,19 +138,28 @@ const Header = () => {
                         profileDropdown ? "block" : "hidden"
                       } lg:hidden transition-all duration-500 pt-4 lg:absolute lg:bottom-0 lg:right-0 lg:transform lg:translate-y-full lg:group-hover:block w-max`}
                     >
-                      <ul className="bg-dark-soft lg:bg-transparent flex flex-col shadow-md shadow-neutral-500 rounded-lg overflow-hidden ">
-                        <button
-                          type="button"
-                          onClick={() => navigate("/profile")}
-                          className="hover:bg-primary hover:text-white px-4 py-2 text-white lg:text-dark-soft "
-                        >
-                          Profile
-                        </button>
+                      <ul className="bg-dark-soft lg:bg-transparent text-center flex flex-col shadow-lg rounded-lg overflow-hidden">
+                        {userState?.userInfo?.admin && (
+                          <button
+                            onClick={() => navigate("/admin")}
+                            type="button"
+                            className="hover:bg-primary hover:text-white px-4 py-2 text-white lg:text-dark-soft"
+                          >
+                            Admin Dashboard
+                          </button>
+                        )}
 
+                        <button
+                          onClick={() => navigate("/profile")}
+                          type="button"
+                          className="hover:bg-primary hover:text-white px-4 py-2 text-white lg:text-dark-soft"
+                        >
+                          Profile Page
+                        </button>
                         <button
                           onClick={logoutHandler}
                           type="button"
-                          className="hover:bg-primary hover:text-white px-4 py-2 text-white lg:text-dark-soft "
+                          className="hover:bg-primary hover:text-white px-4 py-2 text-white lg:text-dark-soft"
                         >
                           Logout
                         </button>

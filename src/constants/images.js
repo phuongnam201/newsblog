@@ -5,6 +5,9 @@ import PostProfileImage from "../assets/posts/post-profile.svg";
 import WaveImage from "../assets/Wave.svg";
 import CtaImage from "../assets/CtaImage.jpg";
 
+const samplePostImage = "/images/sample.jpg";
+const userPhoto = "/images/profile.png";
+
 const images = {
   Logo,
   HeroImage,
@@ -12,6 +15,8 @@ const images = {
   PostProfileImage,
   WaveImage,
   CtaImage,
+  samplePostImage,
+  userPhoto,
 };
 
 export default images;

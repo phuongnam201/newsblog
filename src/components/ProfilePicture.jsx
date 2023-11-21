@@ -65,8 +65,8 @@ const ProfilePicture = ({ avatar }) => {
           document.getElementById("portal")
         )}
 
-      <div className="w-full flex items-center gap-x-4">
-        <div className="relative w-20 h-20 rounded-full outline outline-offset-2 outline-1 lutline-primary overflow-hidden">
+      <div className="w-full flex items-center gap-x-5">
+        <div className="relative w-28 h-28 rounded-full outline outline-offset-2 outline-1 outline-primary overflow-hidden m-5">
           <label
             htmlFor="profilePicture"
             className="cursor-pointer absolute inset-0 rounded-full bg-transparent"
