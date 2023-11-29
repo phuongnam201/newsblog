@@ -57,21 +57,31 @@ const updatePost = async (req, res, next) => {
         next(error);
       } else {
         // every thing went well
+        // if (req.file) {
+        //   let filename;
+        //   filename = post.photo;
+        //   if (filename) {
+        //     fileRemover(filename);
+        //   }
+        //   post.photo = req.file.filename;
+        //   handleUpdatePostData(req.body.document);
+        // } else {
+        //   let filename;
+        //   filename = post.photo;
+        //   post.photo = "";
+        //   fileRemover(filename);
+        //   handleUpdatePostData(req.body.document);
+        // }
+
         if (req.file) {
-          let filename;
-          filename = post.photo;
+          let filename = post.photo;
           if (filename) {
             fileRemover(filename);
           }
           post.photo = req.file.filename;
-          handleUpdatePostData(req.body.document);
-        } else {
-          let filename;
-          filename = post.photo;
-          post.photo = "";
-          fileRemover(filename);
-          handleUpdatePostData(req.body.document);
         }
+
+        handleUpdatePostData(req.body.document);
       }
     });
   } catch (error) {
@@ -106,6 +116,10 @@ const getPost = async (req, res, next) => {
         select: ["avatar", "name"],
       },
       {
+        path: "categories",
+        select: ["title"],
+      },
+      {
         path: "comments",
         match: {
           check: true,
@@ -116,6 +130,7 @@ const getPost = async (req, res, next) => {
             path: "user",
             select: ["avatar", "name"],
           },
+
           {
             path: "replies",
             match: {
