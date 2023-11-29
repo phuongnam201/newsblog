@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { AiFillDashboard, AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { FaComments } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
+import { BiCategoryAlt } from "react-icons/bi";
 import NavItem from "./NavItem";
 import NavItemCollapse from "./NavItemCollapse";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -93,14 +94,6 @@ const Header = () => {
                 activeNavName={activeNavName}
                 setActiveNavName={setActiveNavName}
               />
-              <NavItem
-                title="Comments"
-                link="/admin/comments"
-                icon={<FaComments className="text-xl" />}
-                name="comments"
-                activeNavName={activeNavName}
-                setActiveNavName={setActiveNavName}
-              />
 
               <NavItemCollapse
                 title="Posts"
@@ -120,6 +113,24 @@ const Header = () => {
                   Add New Post
                 </button>
               </NavItemCollapse>
+
+              <NavItem
+                title="Comments"
+                link="/admin/comments"
+                icon={<FaComments className="text-xl" />}
+                name="comments"
+                activeNavName={activeNavName}
+                setActiveNavName={setActiveNavName}
+              />
+
+              <NavItem
+                title="Categories"
+                link="/admin/categories"
+                icon={<BiCategoryAlt className="text-xl" />}
+                name="postCategories"
+                activeNavName={activeNavName}
+                setActiveNavName={setActiveNavName}
+              />
             </div>
           </div>
         </div>

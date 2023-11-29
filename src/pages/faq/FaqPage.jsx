@@ -85,7 +85,7 @@ const FaqPage = () => {
                   activeIndex !== index && "max-h-0 overflow-hidden"
                 } ${
                   activeIndex === index &&
-                  "max-h-screen transition-max-height duration-300 ease-out"
+                  "max-h-screen transition-max-height transition-all duration-1000 translate-y-5 ease-out"
                 }`}
               >
                 {item.answer.steps.map((step, stepIndex) => (

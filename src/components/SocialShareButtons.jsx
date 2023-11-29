@@ -1,10 +1,10 @@
 import React from "react";
 import {
   FaFacebookSquare,
-  FaTwitterSquare,
   FaRedditSquare,
   FaWhatsappSquare,
 } from "react-icons/fa";
+import { FaSquareXTwitter } from "react-icons/fa6";
 
 const SocialShareButtons = ({ url, title }) => {
   return (
@@ -21,7 +21,7 @@ const SocialShareButtons = ({ url, title }) => {
         rel="noreferrer"
         href={`https://twitter.com/intent/tweet?url=${url}`}
       >
-        <FaTwitterSquare className="text-[#00acee] w-12 h-auto" />
+        <FaSquareXTwitter className=" w-12 h-auto" />
       </a>
       <a
         target="_blank"

@@ -7,7 +7,6 @@ import MainLayout from "../../components/MainLayout";
 import SocialShareButtons from "../../components/SocialShareButtons";
 import { images, stables } from "../../constants";
 import SuggestedPosts from "./container/SuggestedPosts";
-
 import { useQuery } from "@tanstack/react-query";
 import { getAllPosts, getSinglePost } from "../../services/index/posts";
 import ArticleDetailSkeleton from "./components/ArticleDetailSkeleton";
@@ -31,6 +30,7 @@ const ArticleDetailPage = () => {
         { name: "Blog", link: "/blog" },
         { name: "Article title", link: `/blog/${data.slug}` },
       ]);
+      //console.log(data?.body);
       setBody(parseJsonToHtml(data?.body));
     },
   });
@@ -59,13 +59,15 @@ const ArticleDetailPage = () => {
               }
               alt={data?.title}
             />
-            <div className="mt-4 flex gap-2">
+            <div className="mt-4 flex gap-2 items-center">
+              <span className="font-semibold">Categories:</span>
               {data?.categories.map((category) => (
                 <Link
+                  key={category._id}
                   to={`/blog?category=${category.name}`}
                   className="text-primary text-sm font-roboto inline-block md:text-base"
                 >
-                  {category.name}
+                  {category.title}
                 </Link>
               ))}
             </div>
@@ -96,7 +98,7 @@ const ArticleDetailPage = () => {
                 Share on:
               </h2>
               <SocialShareButtons
-                url={encodeURI("www.facebook.com/nephechua")}
+                url={encodeURI(window.location.href)}
                 title={encodeURIComponent(data?.title)}
               />
             </div>

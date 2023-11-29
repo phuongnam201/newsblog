@@ -1,41 +1,63 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { images, stables } from "../../../../constants";
-import { deletePost, getAllPosts } from "../../../../services/index/posts";
 import { useEffect, useState } from "react";
 import Pagination from "../../../../components/Pagination";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import {
+  createCategory,
+  deleteCategory,
+  getAllCategories,
+} from "../../../../services/index/postCategories";
 
 let isFirstRun = true;
 
-const ManagePosts = () => {
+const Categories = () => {
+  const [newCategoryTitle, setNewCategoryTitle] = useState("");
   const queryClient = useQueryClient();
   const userState = useSelector((state) => state.user);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const {
-    data: postsData,
-    isLoading,
-    isFetching,
-    refetch,
-  } = useQuery({
-    queryFn: () => getAllPosts(searchKeyword, currentPage),
-    queryKey: ["posts"],
-  });
-
-  const { mutate: mutateDeletePost, isLoading: isLoadingDeletePost } =
+  const { mutate: mutateCreateCategory, isLoading: isLoadingCreateCategory } =
     useMutation({
-      mutationFn: ({ slug, token }) => {
-        return deletePost({
-          slug,
+      mutationFn: ({ title, token }) => {
+        return createCategory({
+          title,
           token,
         });
       },
       onSuccess: (data) => {
-        queryClient.invalidateQueries(["posts"]);
-        toast.success("Post is deleted");
+        queryClient.invalidateQueries(["category"]);
+        toast.success("Category added successfully");
+      },
+      onError: (error) => {
+        toast.error(error.message);
+        console.log(error);
+      },
+    });
+
+  const {
+    data: dataCategories,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useQuery({
+    queryFn: () => getAllCategories(searchKeyword, currentPage),
+    queryKey: ["category"],
+  });
+
+  const { mutate: mutateDeleteCategory, isLoading: isLoadingDeleteCategory } =
+    useMutation({
+      mutationFn: ({ _id, token }) => {
+        return deleteCategory({
+          _id,
+          token,
+        });
+      },
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["category"]);
+        toast.success("Category is deleted");
       },
       onError: (error) => {
         toast.error(error.message);
@@ -62,18 +84,42 @@ const ManagePosts = () => {
     refetch();
   };
 
-  const deletePostHandler = ({ slug, token }) => {
-    mutateDeletePost({ slug, token });
+  const addCategoryHandler = ({ title, token }) => {
+    mutateCreateCategory({ title, token });
+  };
+
+  const deletePostCategory = ({ _id, token }) => {
+    mutateDeleteCategory({ _id, token });
   };
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold">Mange Posts</h1>
+      <h1 className="text-2xl font-semibold">Manage Categories</h1>
 
       <div className="w-full px-4 mx-auto">
         <div className="py-8">
           <div className="flex flex-row justify-between w-full mb-1 sm:mb-0">
-            <h2 className="text-2xl leading-tight">Posts</h2>
+            <h2 className="text-2xl leading-tight">Categories</h2>
+            <div className="flex items-center space-x-3">
+              <input
+                type="text"
+                placeholder="New Category Title"
+                value={newCategoryTitle}
+                onChange={(e) => setNewCategoryTitle(e.target.value)}
+                className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+              />
+              <button
+                onClick={() => {
+                  addCategoryHandler({
+                    title: newCategoryTitle,
+                    token: userState.userInfo.token,
+                  });
+                }}
+                className="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-green-200"
+              >
+                Create
+              </button>
+            </div>
             <div className="text-end">
               <form
                 onSubmit={submitSearchKeywordHandler}
@@ -107,25 +153,13 @@ const ManagePosts = () => {
                       scope="col"
                       className="px-5 py-3 text-sm font-normal text-left text-gray-800 uppercase bg-white border-b border-gray-200"
                     >
-                      Iamge & Title
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-5 py-3 text-sm font-normal text-left text-gray-800 uppercase bg-white border-b border-gray-200"
-                    >
-                      Category
+                      Title
                     </th>
                     <th
                       scope="col"
                       className="px-5 py-3 text-sm font-normal text-left text-gray-800 uppercase bg-white border-b border-gray-200"
                     >
                       Created at
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-5 py-3 text-sm font-normal text-left text-gray-800 uppercase bg-white border-b border-gray-200"
-                    >
-                      Tags
                     </th>
                     <th
                       scope="col"
@@ -142,48 +176,27 @@ const ManagePosts = () => {
                         Loading...
                       </td>
                     </tr>
-                  ) : postsData?.data?.length === 0 ? (
+                  ) : dataCategories?.data?.length === 0 ? (
                     <tr>
                       <td colSpan={5} className="text-center py-10 w-full">
-                        No posts found
+                        No category found
                       </td>
                     </tr>
                   ) : (
-                    postsData?.data.map((post) => (
+                    dataCategories?.data.map((category) => (
                       <tr>
                         <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
                           <div className="flex items-center">
-                            <div className="flex-shrink-0">
-                              <a href="/" className="relative block">
-                                <img
-                                  src={
-                                    post?.photo
-                                      ? stables.UPLOAD_FOLDER_BASE_URL +
-                                        post?.photo
-                                      : images.samplePostImage
-                                  }
-                                  alt={post.title}
-                                  className="mx-auto object-cover rounded-lg w-10 aspect-square"
-                                />
-                              </a>
-                            </div>
-                            <div className="ml-3">
+                            <div>
                               <p className="text-gray-900 whitespace-no-wrap">
-                                {post.title}
+                                {category.title}
                               </p>
                             </div>
                           </div>
                         </td>
                         <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
                           <p className="text-gray-900 whitespace-no-wrap">
-                            {post.categories.length > 0
-                              ? post.categories[0]
-                              : "Uncategorized"}
-                          </p>
-                        </td>
-                        <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
-                          <p className="text-gray-900 whitespace-no-wrap">
-                            {new Date(post.createdAt).toLocaleDateString(
+                            {new Date(category.createdAt).toLocaleDateString(
                               "en-US",
                               {
                                 day: "numeric",
@@ -193,26 +206,15 @@ const ManagePosts = () => {
                             )}
                           </p>
                         </td>
-                        <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
-                          <div className="flex gap-x-2">
-                            {post.tags.length > 0
-                              ? post.tags.map((tag, index) => (
-                                  <p>
-                                    {tag}
-                                    {post.tags.length - 1 !== index && ","}
-                                  </p>
-                                ))
-                              : "No tags"}
-                          </div>
-                        </td>
+
                         <td className="px-5 py-5 text-sm bg-white border-b border-gray-200 space-x-5">
                           <button
-                            disabled={isLoadingDeletePost}
+                            disabled={isLoadingDeleteCategory}
                             type="button"
                             className="text-red-600 hover:text-red-900 disabled:opacity-70 disabled:cursor-not-allowed"
                             onClick={() => {
-                              deletePostHandler({
-                                slug: post?.slug,
+                              deletePostCategory({
+                                _id: category?._id,
                                 token: userState.userInfo.token,
                               });
                             }}
@@ -220,7 +222,7 @@ const ManagePosts = () => {
                             Delete
                           </button>
                           <Link
-                            to={`/admin/posts/manage/edit/${post?.slug}`}
+                            to={"#"}
                             className="text-green-600 hover:text-green-900"
                           >
                             Edit
@@ -236,7 +238,7 @@ const ManagePosts = () => {
                   onPageChange={(page) => setCurrentPage(page)}
                   currentPage={currentPage}
                   totalPageCount={JSON.parse(
-                    postsData?.headers?.["x-totalpagecount"]
+                    dataCategories?.headers?.["x-totalpagecount"]
                   )}
                 />
               )}
@@ -248,4 +250,4 @@ const ManagePosts = () => {
   );
 };
 
-export default ManagePosts;
+export default Categories;

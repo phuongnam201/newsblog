@@ -27,9 +27,7 @@ const CommentsContainer = ({
         return createNewComment({ token, desc, slug, parent, replyOnUser });
       },
       onSuccess: () => {
-        toast.success(
-          "Your comment is sent successfully, it will be visible after the confirmation of the Admin"
-        );
+        toast.success("Your comment will appear after 1-2 minutes");
       },
       onError: (error) => {
         toast.error(error.message);
