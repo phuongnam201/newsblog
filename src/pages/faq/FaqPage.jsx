@@ -63,7 +63,7 @@ const FaqPage = () => {
 
   return (
     <MainLayout>
-      <div className="max-w-2xl mx-auto my-8">
+      <div className="max-w-2xl mx-10 lg:mx-auto my-8">
         <h1 className="font-opensans text-3xl font-bold text-dark-soft text-center mb-5">
           Frequently asked questions
         </h1>

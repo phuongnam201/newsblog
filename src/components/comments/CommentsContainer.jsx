@@ -21,18 +21,62 @@ const CommentsContainer = ({
   const userState = useSelector((state) => state.user);
   const [affectedComment, setAffectedComment] = useState(null);
 
+  // const { mutate: mutateNewComment, isLoading: isLoadingNewComment } =
+  //   useMutation({
+  //     mutationFn: ({ token, desc, slug, parent, replyOnUser }) => {
+  //       return createNewComment({ token, desc, slug, parent, replyOnUser });
+  //     },
+  //     onSuccess: () => {
+  //       toast.success("Your comment will appear after 1-2 minutes");
+  //     },
+  //     onError: (error) => {
+  //       toast.error(error.message);
+  //       console.log(error);
+  //     },
+  //   });
   const { mutate: mutateNewComment, isLoading: isLoadingNewComment } =
     useMutation({
-      mutationFn: ({ token, desc, slug, parent, replyOnUser }) => {
-        return createNewComment({ token, desc, slug, parent, replyOnUser });
+      mutationFn: async ({ token, desc, slug, parent, replyOnUser }) => {
+        // Optimistically update the UI
+        const optimisticComment = {
+          _id: Date.now().toString(), // Use a temporary ID
+          desc,
+          parent,
+          replyOnUser,
+          user: {
+            _id: userState.userInfo._id,
+            // Include other user properties as needed
+          },
+          createdAt: new Date().toISOString(),
+          replies: [], // Assuming a new comment won't have replies initially
+        };
+
+        queryClient.setQueryData(["blog", slug], (prevData) => {
+          return {
+            ...prevData,
+            comments: [...prevData.comments, optimisticComment],
+          };
+        });
+
+        // Perform the actual server mutation
+        const data = await createNewComment({
+          token,
+          desc,
+          slug,
+          parent,
+          replyOnUser,
+        });
+
+        // Invalidate the query to refetch the latest data
+        queryClient.invalidateQueries(["blog", slug]);
+
+        return data;
       },
-      onSuccess: () => {
-        toast.success("Your comment will appear after 1-2 minutes");
-      },
-      onError: (error) => {
+      onError: (error, variables, context) => {
         toast.error(error.message);
         console.log(error);
       },
+      // Remove onSuccess since we are already handling it above
     });
 
   const { mutate: mutateUpdateComment } = useMutation({

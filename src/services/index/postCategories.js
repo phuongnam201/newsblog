@@ -52,6 +52,17 @@ export const getAllCategories = async (
   }
 };
 
+export const getSingleCategory = async ({ _id }) => {
+  try {
+    const { data } = await axios.get(`/api/post-categories/${_id}`);
+    return data;
+  } catch (error) {
+    if (error.response && error.response.data.message)
+      throw new Error(error.response.data.message);
+    throw new Error(error.message);
+  }
+};
+
 export const deleteCategory = async ({ _id, token }) => {
   try {
     const config = {

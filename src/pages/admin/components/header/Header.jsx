@@ -7,15 +7,18 @@ import { AiFillDashboard, AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { FaComments } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
 import { BiCategoryAlt } from "react-icons/bi";
+import { SlLogout } from "react-icons/sl";
 import NavItem from "./NavItem";
 import NavItemCollapse from "./NavItemCollapse";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createPost } from "../../../../services/index/posts";
+import { logout } from "../../../../store/actions/user";
 
 const Header = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const userState = useSelector((state) => state.user);
   const queryClient = useQueryClient();
   const [isMenuActive, setIsMenuActive] = useState(false);
@@ -53,7 +56,13 @@ const Header = () => {
   }, [windowSize.width]);
 
   const handleCreateNewPost = ({ token }) => {
-    mutateCreatePost({ token });
+    //mutateCreatePost({ token });
+    navigate(`/admin/posts/manage/createNewPost`);
+  };
+  const logoutHandler = () => {
+    dispatch(logout());
+    toast.success("Logged out successfully");
+    navigate("/");
   };
 
   return (
@@ -102,10 +111,12 @@ const Header = () => {
                 activeNavName={activeNavName}
                 setActiveNavName={setActiveNavName}
               >
-                <Link to="/admin/posts/manage">Manage all posts</Link>
+                <Link to="/admin/posts/manage">
+                  <p className="hover:text-primary">Manage all posts</p>
+                </Link>
                 <button
                   disabled={isLoadingCreatePost}
-                  className="text-start disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="text-start disabled:opacity-60 disabled:cursor-not-allowed hover:text-primary"
                   onClick={() =>
                     handleCreateNewPost({ token: userState.userInfo.token })
                   }
@@ -131,6 +142,14 @@ const Header = () => {
                 activeNavName={activeNavName}
                 setActiveNavName={setActiveNavName}
               />
+
+              <button
+                onClick={logoutHandler}
+                className="text-[#A5A5A5] flex items-center font-semibold hover:text-primary gap-x-2 py-2 text-lg"
+              >
+                <SlLogout className="text-xl" />
+                <span>Logout</span>
+              </button>
             </div>
           </div>
         </div>

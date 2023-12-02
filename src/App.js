@@ -13,6 +13,8 @@ import ManagePosts from "./pages/admin/screens/posts/ManagePosts";
 import EditPost from "./pages/admin/screens/posts/EditPost";
 import FaqPage from "./pages/faq/FaqPage";
 import Categories from "./pages/admin/screens/categories/Categories";
+import SearchResults from "./pages/searchResult/SearchResults";
+import CreatePost from "./pages/admin/screens/posts/CreatePost";
 
 function App() {
   return (
@@ -20,15 +22,18 @@ function App() {
       <Routes>
         <Route index path="/" element={<HomePage />} />
         <Route path="/blog/:slug" element={<ArticleDetailPage />} />
+        <Route path="/search" element={<SearchResults />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/faq" element={<FaqPage />} />
+
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Admin />} />
           <Route path="comments" element={<Comments />} />
           <Route path="posts/manage" element={<ManagePosts />} />
           <Route path="posts/manage/edit/:slug" element={<EditPost />} />
+          <Route path="posts/manage/createNewPost" element={<CreatePost />} />
           <Route path="categories" element={<Categories />} />
         </Route>
       </Routes>

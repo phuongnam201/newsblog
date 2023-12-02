@@ -17,7 +17,7 @@ const navItemsInfo = [
       { title: "Contact us", href: "/contact" },
     ],
   },
-  { name: "Pricing", type: "link", href: "/pricing" },
+  // { name: "Pricing", type: "link", href: "/pricing" },
   { name: "Faq", type: "link", href: "/faq" },
 ];
 

@@ -74,3 +74,20 @@ export const createPost = async ({ token }) => {
     throw new Error(error.message);
   }
 };
+
+export const createPost2 = async ({ createData, token }) => {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    console.log(createData);
+    const { data } = await axios.post(`/api/posts`, createData, config);
+    return data;
+  } catch (error) {
+    if (error.response && error.response.data.message)
+      throw new Error(error.response.data.message);
+    throw new Error(error.message);
+  }
+};

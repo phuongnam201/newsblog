@@ -63,7 +63,7 @@ const EditPost = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries(["blog", slug]);
       toast.success("Post is updated");
-      navigate(`/admin/posts/manage/edit/${data.slug}`, { replace: true });
+      navigate(`/admin/posts/manage/`);
     },
     onError: (error) => {
       toast.error(error.message);
@@ -160,6 +160,7 @@ const EditPost = () => {
             <div className="mt-4 flex gap-2">
               {data?.categories.map((category) => (
                 <Link
+                  key={category._id}
                   to={`/blog?category=${category.name}`}
                   className="text-primary text-sm font-roboto inline-block md:text-base"
                 >
@@ -167,6 +168,39 @@ const EditPost = () => {
                 </Link>
               ))}
             </div>
+            <div className="mb-5 mt-2">
+              <label className="d-label">
+                <span className="d-label-text">Categories</span>
+              </label>
+              {isPostDataLoaded && (
+                <MultiSelectTagDropdown
+                  loadOptions={promiseOptions}
+                  defaultValue={data.categories.map(categoryToOption)}
+                  onChange={(newValue) =>
+                    setCategories(newValue.map((item) => item.value))
+                  }
+                />
+              )}
+            </div>
+            <div className="mb-5 mt-2">
+              <label className="d-label">
+                <span className="d-label-text">Tags</span>
+              </label>
+              {isPostDataLoaded && (
+                <CreatableSelect
+                  defaultValue={data.tags.map((tag) => ({
+                    value: tag,
+                    label: tag,
+                  }))}
+                  isMulti
+                  onChange={(newValue) =>
+                    setTags(newValue.map((item) => item.value))
+                  }
+                  className="relative z-19"
+                />
+              )}
+            </div>
+
             <div className="d-form-control w-full">
               <label className="d-label" htmlFor="title">
                 <span className="d-label-text">Title</span>
@@ -205,38 +239,7 @@ const EditPost = () => {
                 placeholder="post slug"
               />
             </div>
-            <div className="mb-5 mt-2">
-              <label className="d-label">
-                <span className="d-label-text">Categories</span>
-              </label>
-              {isPostDataLoaded && (
-                <MultiSelectTagDropdown
-                  loadOptions={promiseOptions}
-                  defaultValue={data.categories.map(categoryToOption)}
-                  onChange={(newValue) =>
-                    setCategories(newValue.map((item) => item.value))
-                  }
-                />
-              )}
-            </div>
-            <div className="mb-5 mt-2">
-              <label className="d-label">
-                <span className="d-label-text">Tags</span>
-              </label>
-              {isPostDataLoaded && (
-                <CreatableSelect
-                  defaultValue={data.tags.map((tag) => ({
-                    value: tag,
-                    label: tag,
-                  }))}
-                  isMulti
-                  onChange={(newValue) =>
-                    setTags(newValue.map((item) => item.value))
-                  }
-                  className="relative"
-                />
-              )}
-            </div>
+
             <div className="w-full">
               <label className="d-label" htmlFor="title">
                 <span className="d-label-text">Content</span>

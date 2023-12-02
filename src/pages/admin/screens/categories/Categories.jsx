@@ -153,6 +153,12 @@ const Categories = () => {
                       scope="col"
                       className="px-5 py-3 text-sm font-normal text-left text-gray-800 uppercase bg-white border-b border-gray-200"
                     >
+                      ID
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-5 py-3 text-sm font-normal text-left text-gray-800 uppercase bg-white border-b border-gray-200"
+                    >
                       Title
                     </th>
                     <th
@@ -185,6 +191,15 @@ const Categories = () => {
                   ) : (
                     dataCategories?.data.map((category) => (
                       <tr>
+                        <td className="px-3 py-5 text-sm bg-white border-b border-gray-200">
+                          <div className="flex items-center">
+                            <div>
+                              <p className="text-gray-900 whitespace-no-wrap">
+                                {category._id}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
                         <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
                           <div className="flex items-center">
                             <div>
@@ -221,12 +236,12 @@ const Categories = () => {
                           >
                             Delete
                           </button>
-                          <Link
+                          {/* <Link
                             to={"#"}
                             className="text-green-600 hover:text-green-900"
                           >
                             Edit
-                          </Link>
+                          </Link> */}
                         </td>
                       </tr>
                     ))
