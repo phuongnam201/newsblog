@@ -19,7 +19,71 @@ const createPost = async (req, res, next) => {
     });
 
     const createdPost = await post.save();
+
     return res.json(createdPost);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const createPost2 = async (req, res, next) => {
+  try {
+    const upload = uploadPicture.single("postPicture");
+
+    const handleCreatePostData = async (data) => {
+      //console.log("Raw data:", data);
+
+      try {
+        if (!data) {
+          throw new Error("Data is undefined or null");
+        }
+
+        const { title, caption, body, slug, tags, categories } =
+          JSON.parse(data);
+        console.log("Parsed data:", {
+          title,
+          caption,
+          body,
+          slug,
+          tags,
+          categories,
+        });
+
+        const post = new Post({
+          title: title || "sample title",
+          caption: caption || "sample caption",
+          slug: slug || uuidv4(),
+          body: body || { type: "doc", content: [] },
+          photo: req.file ? req.file.filename : "", // Use filename if file exists
+          user: req.user._id,
+          tags: tags || [],
+          categories: categories || [],
+        });
+
+        const createdPost = await post.save();
+        return createdPost;
+      } catch (error) {
+        console.error("Error parsing post data:", error);
+        throw new Error("Error parsing post data");
+      }
+    };
+
+    upload(req, res, async function (err) {
+      if (err) {
+        const error = new Error(
+          "An unknown error occurred when uploading " + err.message
+        );
+        next(error);
+      } else {
+        try {
+          const createdPost = await handleCreatePostData(req.body.document);
+          console.log("this is clg req", req.body.document);
+          res.json(createdPost);
+        } catch (error) {
+          next(error);
+        }
+      }
+    });
   } catch (error) {
     next(error);
   }
@@ -56,32 +120,32 @@ const updatePost = async (req, res, next) => {
         );
         next(error);
       } else {
-        // every thing went well
-        // if (req.file) {
-        //   let filename;
-        //   filename = post.photo;
-        //   if (filename) {
-        //     fileRemover(filename);
-        //   }
-        //   post.photo = req.file.filename;
-        //   handleUpdatePostData(req.body.document);
-        // } else {
-        //   let filename;
-        //   filename = post.photo;
-        //   post.photo = "";
-        //   fileRemover(filename);
-        //   handleUpdatePostData(req.body.document);
-        // }
-
+        //every thing went well
         if (req.file) {
-          let filename = post.photo;
+          let filename;
+          filename = post.photo;
           if (filename) {
             fileRemover(filename);
           }
           post.photo = req.file.filename;
+          handleUpdatePostData(req.body.document);
+        } else {
+          let filename;
+          filename = post.photo;
+          post.photo = "";
+          fileRemover(filename);
+          handleUpdatePostData(req.body.document);
         }
 
-        handleUpdatePostData(req.body.document);
+        // if (req.file) {
+        //   let filename = post.photo;
+        //   if (filename) {
+        //     fileRemover(filename);
+        //   }
+        //   post.photo = req.file.filename;
+        // }
+
+        // handleUpdatePostData(req.body.document);
       }
     });
   } catch (error) {
@@ -193,7 +257,7 @@ const getAllPosts = async (req, res, next) => {
           select: ["avatar", "name", "verified"],
         },
       ])
-      .sort({ updatedAt: "desc" });
+      .sort({ createdAt: "desc" });
 
     return res.json(result);
   } catch (error) {
@@ -201,4 +265,11 @@ const getAllPosts = async (req, res, next) => {
   }
 };
 
-export { createPost, updatePost, deletePost, getPost, getAllPosts };
+export {
+  createPost,
+  updatePost,
+  deletePost,
+  getPost,
+  getAllPosts,
+  createPost2,
+};
