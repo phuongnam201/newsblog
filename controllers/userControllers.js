@@ -162,10 +162,80 @@ const updateProfilePicture = (req, res, next) => {
   }
 };
 
+const getAllUsers = async (req, res, next) => {
+  try {
+    const filter = req.query.searchKeyword;
+
+    let where = {};
+    if (filter) {
+      where.$or = [
+        { name: { $regex: filter, $options: "i" } },
+        { email: { $regex: filter, $options: "i" } },
+      ];
+    }
+    let query = User.find(where).select("-password");
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * pageSize;
+    const total = await User.find(where).countDocuments();
+    const pages = Math.ceil(total / pageSize);
+
+    res.header({
+      "x-filter": filter,
+      "x-totalcount": JSON.stringify(total),
+      "x-currentpage": JSON.stringify(page),
+      "x-pagesize": JSON.stringify(pageSize),
+      "x-totalpagecount": JSON.stringify(pages),
+    });
+
+    if (page > pages) {
+      return res.json([]);
+    }
+
+    const result = await query
+      .skip(skip)
+      .limit(pageSize)
+      .sort({ createAt: "desc" });
+
+    return res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteUser = async (req, res, next) => {
+  //console.log(req.params.id);
+  try {
+    const userId = req.params.id;
+    //console.log(userId);
+
+    const userToDelete = await User.findByIdAndDelete(userId);
+
+    if (!userToDelete) {
+      const error = new Error("User was not found");
+      return next(error);
+    }
+
+    // delete avatar
+    if (userToDelete.avatar) {
+      fileRemover(userToDelete.avatar);
+    }
+
+    return res.json({
+      message: "User is successfully deleted",
+      deletedUser: userToDelete,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   registerUser,
   loginUser,
   userProfile,
   updateProfile,
   updateProfilePicture,
+  getAllUsers,
+  deleteUser,
 };
