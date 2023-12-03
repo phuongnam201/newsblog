@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { createPost } from "../../../../services/index/posts";
 import { logout } from "../../../../store/actions/user";
+import { FaUser } from "react-icons/fa6";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -104,6 +105,23 @@ const Header = () => {
                 setActiveNavName={setActiveNavName}
               />
 
+              <NavItem
+                title="Users"
+                link="/admin/users/manage"
+                icon={<FaUser className="text-xl" />}
+                name="users"
+                activeNavName={activeNavName}
+                setActiveNavName={setActiveNavName}
+              />
+
+              <NavItem
+                title="Categories"
+                link="/admin/categories"
+                icon={<BiCategoryAlt className="text-xl" />}
+                name="postCategories"
+                activeNavName={activeNavName}
+                setActiveNavName={setActiveNavName}
+              />
               <NavItemCollapse
                 title="Posts"
                 icon={<MdDashboard className="text-xl" />}
@@ -130,15 +148,6 @@ const Header = () => {
                 link="/admin/comments"
                 icon={<FaComments className="text-xl" />}
                 name="comments"
-                activeNavName={activeNavName}
-                setActiveNavName={setActiveNavName}
-              />
-
-              <NavItem
-                title="Categories"
-                link="/admin/categories"
-                icon={<BiCategoryAlt className="text-xl" />}
-                name="postCategories"
                 activeNavName={activeNavName}
                 setActiveNavName={setActiveNavName}
               />

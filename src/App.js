@@ -15,6 +15,7 @@ import FaqPage from "./pages/faq/FaqPage";
 import Categories from "./pages/admin/screens/categories/Categories";
 import SearchResults from "./pages/searchResult/SearchResults";
 import CreatePost from "./pages/admin/screens/posts/CreatePost";
+import ManageUsers from "./pages/admin/screens/users/ManageUsers";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
 
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Admin />} />
+          <Route path="users/manage" element={<ManageUsers />} />
           <Route path="comments" element={<Comments />} />
           <Route path="posts/manage" element={<ManagePosts />} />
           <Route path="posts/manage/edit/:slug" element={<EditPost />} />

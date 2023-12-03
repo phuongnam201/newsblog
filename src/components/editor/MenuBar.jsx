@@ -10,7 +10,12 @@ import {
   AiOutlineUndo,
   AiOutlineUnorderedList,
 } from "react-icons/ai";
-import { FiAlignJustify } from "react-icons/fi";
+import {
+  FiAlignCenter,
+  FiAlignJustify,
+  FiAlignLeft,
+  FiAlignRight,
+} from "react-icons/fi";
 import { BiParagraph } from "react-icons/bi";
 import { FiCode } from "react-icons/fi";
 import { MdOutlineLayersClear } from "react-icons/md";
@@ -159,12 +164,39 @@ const MenuBar = ({ editor }) => {
       </button>
 
       <button
-        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        onClick={() => editor.chain().focus().setTextAlign("justify").run()}
         className={`editor-btn ${
-          editor.isActive("orderedList") && "active-editor-btn"
+          editor.isActive({ textAlign: "justify" }) && "active-editor-btn"
         }`}
       >
         <FiAlignJustify />
+      </button>
+
+      <button
+        onClick={() => editor.chain().focus().setTextAlign("left").run()}
+        className={`editor-btn ${
+          editor.isActive({ textAlign: "left" }) && "active-editor-btn"
+        }`}
+      >
+        <FiAlignLeft />
+      </button>
+
+      <button
+        onClick={() => editor.chain().focus().setTextAlign("center").run()}
+        className={`editor-btn ${
+          editor.isActive({ textAlign: "center" }) && "active-editor-btn"
+        }`}
+      >
+        <FiAlignCenter />
+      </button>
+
+      <button
+        onClick={() => editor.chain().focus().setTextAlign("right").run()}
+        className={`editor-btn ${
+          editor.isActive({ textAlign: "right" }) && "active-editor-btn"
+        }`}
+      >
+        <FiAlignRight />
       </button>
 
       <button
