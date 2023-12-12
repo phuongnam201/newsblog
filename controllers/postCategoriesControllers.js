@@ -24,15 +24,14 @@ const createPostCategory = async (req, res, next) => {
   }
 };
 
-// const getAllPostCategories = async (req, res, next) => {
-//   try {
-//     const postCategories = await PostCategories.find({});
-
-//     return res.json(postCategories);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+const getCategoryById = async (req, res, next) => {
+  try {
+    const postCategories = await PostCategories.find({ _id: req.params.id });
+    return res.json(postCategories);
+  } catch (error) {
+    next(error);
+  }
+};
 
 const getAllPostCategories = async (req, res, next) => {
   try {
@@ -120,4 +119,5 @@ export {
   getAllPostCategories,
   updatePostCategory,
   deletePostCategory,
+  getCategoryById,
 };

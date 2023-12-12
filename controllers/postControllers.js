@@ -77,7 +77,7 @@ const createPost2 = async (req, res, next) => {
       } else {
         try {
           const createdPost = await handleCreatePostData(req.body.document);
-          console.log("this is clg req", req.body.document);
+          //console.log("this is clg req", req.body.document);
           res.json(createdPost);
         } catch (error) {
           next(error);
@@ -94,7 +94,7 @@ const updatePost = async (req, res, next) => {
     const post = await Post.findOne({ slug: req.params.slug });
 
     if (!post) {
-      const error = new Error("Post aws not found");
+      const error = new Error("Post was not found");
       next(error);
       return;
     }
@@ -116,36 +116,30 @@ const updatePost = async (req, res, next) => {
     upload(req, res, async function (err) {
       if (err) {
         const error = new Error(
-          "An unknown error occured when uploading " + err.message
+          "An unknown error occurred when uploading " + err.message
         );
         next(error);
       } else {
-        //every thing went well
+        // Everything went well
+        console.log("object");
         if (req.file) {
-          let filename;
-          filename = post.photo;
+          let filename = post.photo;
           if (filename) {
             fileRemover(filename);
           }
           post.photo = req.file.filename;
-          handleUpdatePostData(req.body.document);
         } else {
-          let filename;
-          filename = post.photo;
+          // If no file is uploaded, set photo to an empty string
+          console.log("test");
+          let filename = post.photo;
           post.photo = "";
-          fileRemover(filename);
-          handleUpdatePostData(req.body.document);
+          if (filename) {
+            fileRemover(filename);
+          }
         }
 
-        // if (req.file) {
-        //   let filename = post.photo;
-        //   if (filename) {
-        //     fileRemover(filename);
-        //   }
-        //   post.photo = req.file.filename;
-        // }
-
-        // handleUpdatePostData(req.body.document);
+        // Continue with updating post data
+        handleUpdatePostData(req.body.document);
       }
     });
   } catch (error) {

@@ -60,44 +60,66 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-const userProfile = async (req, res, next) => {
+//get profile
+const handlerGetUserProfile = async (id) => {
   try {
-    let user = await User.findById(req.user._id);
+    let user = await User.findById(id);
     if (user) {
-      return res.status(200).json({
+      return {
         _id: user._id,
         avatar: user.avatar,
         name: user.name,
         email: user.email,
         verified: user.verified,
         admin: user.admin,
-      });
+      };
     } else {
-      let error = new Error("User not found");
-      error.statusCode = 404;
-      next(error);
+      throw new Error("User not found");
     }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const userProfile = async (req, res, next) => {
+  try {
+    const userProfileData = await handlerGetUserProfile(req.user._id);
+    res.status(200).json(userProfileData);
   } catch (error) {
     next(error);
   }
 };
 
-const updateProfile = async (req, res, next) => {
+const getAnUser = async (req, res, next) => {
   try {
-    let user = await User.findById(req.user._id);
+    const userProfileData = await handlerGetUserProfile(req.params.id);
+    res.status(200).json(userProfileData);
+  } catch (error) {
+    next(error);
+  }
+};
+
+//update profile
+
+const handlerUpdateProfile = async (userId, updateData) => {
+  try {
+    let user = await User.findById(userId);
     if (!user) {
       throw new Error("User not found");
     }
-    user.name = req.body.name || user.name;
-    user.email = req.body.email || user.email;
-    if (req.body.password && req.body.password.length < 6) {
+
+    user.name = updateData.name || user.name;
+    user.email = updateData.email || user.email;
+
+    if (updateData.password && updateData.password.length < 6) {
       throw new Error("Password length must be at least 6 characters");
-    } else if (req.body.password) {
-      user.password = req.body.password;
+    } else if (updateData.password) {
+      user.password = updateData.password;
     }
 
     const updateUserProfile = await user.save();
-    res.status(200).json({
+
+    return {
       _id: updateUserProfile._id,
       avatar: updateUserProfile.avatar,
       name: updateUserProfile.name,
@@ -105,10 +127,80 @@ const updateProfile = async (req, res, next) => {
       verified: updateUserProfile.verified,
       admin: updateUserProfile.admin,
       token: await updateUserProfile.generateJWT(),
-    });
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
+const updateProfile = async (req, res, next) => {
+  try {
+    const updateData = {
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+    };
+
+    const updateUserProfile = await handlerUpdateProfile(
+      req.user._id,
+      updateData
+    );
+
+    res.status(200).json(updateUserProfile);
   } catch (error) {
     next(error);
   }
+};
+
+const updateAnUser = async (req, res, next) => {
+  try {
+    const updateData = {
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+    };
+
+    const updateUserProfile = await handlerUpdateProfile(
+      req.params.id,
+      updateData
+    );
+
+    res.status(200).json(updateUserProfile);
+  } catch (error) {
+    next(error);
+  }
+};
+
+//update profile picture
+
+const handleUpdateProfilePicture = async (user, file) => {
+  let filename;
+
+  if (file) {
+    if (user.avatar) {
+      filename = user.avatar;
+      fileRemover(filename);
+    }
+    user.avatar = file.filename;
+  } else {
+    if (user.avatar) {
+      filename = user.avatar;
+      user.avatar = "";
+      fileRemover(filename);
+    }
+  }
+
+  await user.save();
+
+  return {
+    _id: user._id,
+    avatar: user.avatar,
+    name: user.name,
+    email: user.email,
+    verified: user.verified,
+    admin: user.admin,
+    token: await user.generateJWT(),
+  };
 };
 
 const updateProfilePicture = (req, res, next) => {
@@ -117,44 +209,41 @@ const updateProfilePicture = (req, res, next) => {
     upload(req, res, async function (err) {
       if (err) {
         const error = new Error(
-          "An unknown error occured when uploading " + err.message
+          "An unknown error occurred when uploading " + err.message
         );
+        throw error;
       } else {
-        if (req.file) {
-          let filename;
-          const updateUser = await User.findById(req.user._id);
-          filename = updateUser.avatar;
-          if (filename) {
-            fileRemover(filename);
-          }
-          updateUser.avatar = req.file.filename;
-          await updateUser.save();
-          res.json({
-            _id: updateUser._id,
-            avatar: updateUser.avatar,
-            name: updateUser.name,
-            email: updateUser.email,
-            verified: updateUser.verified,
-            admin: updateUser.admin,
-            token: await updateUser.generateJWT(),
-          });
-        } else {
-          let filename;
-          let updateUser = await User.findById(req.user._id);
-          filename = updateUser.avatar;
-          updateUser.avatar = "";
-          await updateUser.save();
-          fileRemover(filename);
-          res.json({
-            _id: updateUser._id,
-            avatar: updateUser.avatar,
-            name: updateUser.name,
-            email: updateUser.email,
-            verified: updateUser.verified,
-            admin: updateUser.admin,
-            token: await updateUser.generateJWT(),
-          });
-        }
+        const updateUser = await User.findById(req.user._id);
+        const updatedUserProfile = await handleUpdateProfilePicture(
+          updateUser,
+          req.file
+        );
+
+        res.json(updatedUserProfile);
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateProfilePictureForAnUser = (req, res, next) => {
+  try {
+    const upload = uploadPicture.single("profilePicture");
+    upload(req, res, async function (err) {
+      if (err) {
+        const error = new Error(
+          "An unknown error occurred when uploading " + err.message
+        );
+        throw error;
+      } else {
+        const updateUser = await User.findById(req.params.id);
+        const updatedUserProfile = await handleUpdateProfilePicture(
+          updateUser,
+          req.file
+        );
+
+        res.json(updatedUserProfile);
       }
     });
   } catch (error) {
@@ -238,4 +327,7 @@ export {
   updateProfilePicture,
   getAllUsers,
   deleteUser,
+  getAnUser,
+  updateProfilePictureForAnUser,
+  updateAnUser,
 };
